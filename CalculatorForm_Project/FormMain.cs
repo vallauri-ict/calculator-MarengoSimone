@@ -50,6 +50,7 @@ namespace CalculatorForm_Project
         };
 
         private RichTextBox resultBox;
+        private Font baseFont = new Font("Segoe UI", 22, FontStyle.Bold);
 
         private const char ASCIIZERO = '\x0000';
         private double operand1, operand2, result;
@@ -72,7 +73,7 @@ namespace CalculatorForm_Project
             resultBox = new RichTextBox();
             resultBox.ReadOnly = true;
             resultBox.SelectionAlignment = HorizontalAlignment.Right;
-            resultBox.Font = new Font("Segoe UI", 22);
+            resultBox.Font = baseFont;
             resultBox.Width = this.Width - 16;
             resultBox.Height = 50;
             resultBox.Top = 20;
@@ -84,10 +85,21 @@ namespace CalculatorForm_Project
 
         private void ResultBox_TextChanged(object sender, EventArgs e)
         {
-            int newSize = 22 + (15 - resultBox.Text.Length);
-            if (newSize > 8 && newSize < 23)
+            if(resultBox.Text.Length == 1)
             {
-                resultBox.Font = new Font("Segoe UI", newSize);
+                resultBox.Font = baseFont;
+            }
+            else
+            {
+                int delta = 17 - resultBox.Text.Length;
+                if (delta % 2 == 0)
+                {
+                    float newSize = baseFont.Size + delta;
+                    if (newSize > 8 && newSize < 23)
+                    {
+                        resultBox.Font = new Font(baseFont.FontFamily, newSize, baseFont.Style);
+                    }
+                }
             }
         }
 
@@ -138,7 +150,7 @@ namespace CalculatorForm_Project
                 {
                     resultBox.Text = "";
                 }
-                resultBox.Text += clickedButton.Text;
+                if (resultBox.Text.Length < 20) resultBox.Text += clickedButton.Text;
             }
             else
             {
@@ -146,7 +158,7 @@ namespace CalculatorForm_Project
                 {
                     if (!resultBox.Text.Contains(bs.Content))
                     {
-                        resultBox.Text += clickedButton.Text;
+                        if (resultBox.Text.Length < 20) resultBox.Text += clickedButton.Text;
                     }
                 }
                 if (bs.IsPlusMinusSign)
@@ -183,13 +195,19 @@ namespace CalculatorForm_Project
             lastButtonClicked = bs;
         }
 
+        private string getFormattedNumber(double number)
+        {
+            //return String.Format("{0:0,0}", number);
+            return number.ToString("N");
+        }
+
         private void clearAll(double numberToWrite=0)
         {
             operand1 = 0;
             operand2 = 0;
             result = 0;
             lastOperator = ASCIIZERO;
-            resultBox.Text = numberToWrite.ToString();
+            resultBox.Text = getFormattedNumber(numberToWrite).ToString();
         }
 
         private void manageOperators(ButtonStruct bs)
@@ -231,7 +249,7 @@ namespace CalculatorForm_Project
                         lastOperator = bs.Content;
                         operand2 = 0;
                     }
-                    resultBox.Text = result.ToString();
+                    resultBox.Text = getFormattedNumber(result).ToString();
                 }
             }
         }
