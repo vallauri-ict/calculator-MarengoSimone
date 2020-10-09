@@ -42,7 +42,7 @@ namespace CalculatorForm_Project
         private ButtonStruct[,] buttons =
         {
             {new ButtonStruct(' ',false), new ButtonStruct(' ',false), new ButtonStruct('C',false), new ButtonStruct('<',false) },
-            {new ButtonStruct(' ',false), new ButtonStruct(' ',false), new ButtonStruct(' ',false), new ButtonStruct('/',false,false,false,false,true) },
+            {new ButtonStruct(' ',false), new ButtonStruct(' ',false), new ButtonStruct('s',false,false,false,false,false,true), new ButtonStruct('/',false,false,false,false,true) },
             {new ButtonStruct('7',true,true), new ButtonStruct('8',true,true), new ButtonStruct('9',true,true), new ButtonStruct('x',false,false,false,false,true) },
             {new ButtonStruct('4',true,true), new ButtonStruct('5',true,true), new ButtonStruct('6',true,true), new ButtonStruct('-',false,false,false,false,true) },
             {new ButtonStruct('1',true,true), new ButtonStruct('2',true,true), new ButtonStruct('3',true,true), new ButtonStruct('+',false,false,false,false,true) },
@@ -185,6 +185,9 @@ namespace CalculatorForm_Project
                             {
                                 resultBox.Text = "0";
                             }
+                            break;
+                        case 's':
+                            resultBox.Text = Math.Sqrt(Convert.ToDouble(resultBox.Text)).ToString();
                             break;
                         default:
                             if(bs.IsOperator) manageOperators(bs);
