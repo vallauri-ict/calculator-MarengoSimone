@@ -197,8 +197,8 @@ namespace CalculatorForm_Project
 
         private string getFormattedNumber(double number)
         {
-            return String.Format("{0:0,0000000000000000}", number);
-            //return number.ToString("N");
+            //return String.Format("{0:0,0000000000000000}", number);
+            return number.ToString("N16");
         }
 
         private void clearAll(double numberToWrite=0)
