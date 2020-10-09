@@ -63,7 +63,7 @@ namespace CalculatorForm_Project
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            MakeResultBox();
+             MakeResultBox();
             MakeButtons(buttons);
             
         }
@@ -197,8 +197,8 @@ namespace CalculatorForm_Project
 
         private string getFormattedNumber(double number)
         {
-            //return String.Format("{0:0,0}", number);
-            return number.ToString("N");
+            return String.Format("{0:0,0}", number);
+            //return number.ToString("N");
         }
 
         private void clearAll(double numberToWrite=0)
