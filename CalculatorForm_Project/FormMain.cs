@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -204,7 +205,8 @@ namespace CalculatorForm_Project
         private string getFormattedNumber(double number)
         {
             //return String.Format("{0:0,0000000000000000}", number);
-            return number.ToString("N16");
+            char decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+            return number.ToString("N16").TrimEnd('0').TrimEnd(',');
         }
 
         private void clearAll(double numberToWrite=0)
