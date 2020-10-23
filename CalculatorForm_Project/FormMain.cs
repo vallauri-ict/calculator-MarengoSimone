@@ -22,7 +22,8 @@ namespace CalculatorForm_Project
             public bool IsPlusMinusSign;
             public bool IsOperator;
             public bool IsEqualSign;
-            public ButtonStruct(char content, bool isBold, bool isNumber=false, bool isDecimalSeparator = false, bool isPlusMinusSign=false, bool isOperator=false,  bool isEqualSign=false)
+            public bool IsSpecialOperator;
+            public ButtonStruct(char content, bool isBold, bool isNumber=false, bool isDecimalSeparator = false, bool isPlusMinusSign=false, bool isOperator=false,  bool isEqualSign=false, bool isSpecialOperator=false)
             {
                 this.Content = content;
                 this.IsBold = isBold;
@@ -31,6 +32,7 @@ namespace CalculatorForm_Project
                 this.IsPlusMinusSign = isPlusMinusSign;
                 this.IsOperator = isOperator;
                 this.IsEqualSign = isEqualSign;
+                this.IsSpecialOperator = isSpecialOperator;
                 
             }
             public override string ToString()
@@ -43,7 +45,7 @@ namespace CalculatorForm_Project
         private ButtonStruct[,] buttons =
         {
             {new ButtonStruct(' ',false), new ButtonStruct(' ',false), new ButtonStruct('C',false), new ButtonStruct('<',false) },
-            {new ButtonStruct('¼',false,false,false,false,true), new ButtonStruct(' ',false), new ButtonStruct(' ',false,false,false,false,true), new ButtonStruct('/',false,false,false,false,true) },
+            {new ButtonStruct('¼',false,false,false,false,true,false,true), new ButtonStruct(' ',false), new ButtonStruct(' ',false,false,false,false,true), new ButtonStruct('/',false,false,false,false,true) },
             {new ButtonStruct('7',true,true), new ButtonStruct('8',true,true), new ButtonStruct('9',true,true), new ButtonStruct('x',false,false,false,false,true) },
             {new ButtonStruct('4',true,true), new ButtonStruct('5',true,true), new ButtonStruct('6',true,true), new ButtonStruct('-',false,false,false,false,true) },
             {new ButtonStruct('1',true,true), new ButtonStruct('2',true,true), new ButtonStruct('3',true,true), new ButtonStruct('+',false,false,false,false,true) },
@@ -220,6 +222,26 @@ namespace CalculatorForm_Project
 
         private void manageOperators(ButtonStruct bs)
         {
+            if (bs.IsSpecialOperator)
+            {
+                switch (bs.Content)
+                {
+                    case '¼':
+                        double specialOperatorResult = 1 / double.Parse(resultBox.Text);
+                        if (lastOperator == ASCIIZERO)
+                        {
+                            result = specialOperatorResult;
+                            resultBox.Text = getFormattedNumber(result);
+                        }
+                        else
+                        {
+                            operand2 = specialOperatorResult;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
             if(lastOperator == ASCIIZERO)
             {
                 operand1 = double.Parse(resultBox.Text);
@@ -229,11 +251,19 @@ namespace CalculatorForm_Project
             {
                 if (lastButtonClicked.IsOperator && !lastButtonClicked.IsEqualSign)
                 {
-                    lastOperator = bs.Content;
+                    if (bs.IsSpecialOperator)
+                    {
+                        result = operand2;
+                        resultBox.Text = getFormattedNumber(result);
+                        lastOperator = ASCIIZERO;
+                    }
+                    else
+                        lastOperator = bs.Content;
                 }
                 else
                 {
-                    if (!lastButtonClicked.IsEqualSign) operand2 = double.Parse(resultBox.Text);
+                    if (!lastButtonClicked.IsEqualSign && !bs.IsSpecialOperator) 
+                        operand2 = double.Parse(resultBox.Text);
                     switch (lastOperator)
                     {
                         case '+':
@@ -248,19 +278,16 @@ namespace CalculatorForm_Project
                         case '/':
                             result = operand1 / operand2;
                             break;
-                        case '¼':
-                            result = 1 / result; // TODO: non funziona
-                            break;
                         default:
                             break;
                     }
                     operand1 = result;
-                    if (!bs.IsEqualSign)
+                    if (!bs.IsEqualSign && !bs.IsSpecialOperator)
                     {
                         lastOperator = bs.Content;
                         operand2 = 0;
                     }
-                    resultBox.Text = getFormattedNumber(result).ToString();
+                    resultBox.Text = getFormattedNumber(result);
                 }
             }
         }
